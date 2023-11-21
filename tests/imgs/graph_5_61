@@ -1,0 +1,14 @@
+// Graph
+digraph {
+	0
+	4
+	0 -> 4 [label=70]
+	3
+	3 -> 4 [label=30]
+	1
+	4 -> 1 [label=81]
+	0 -> 1 [label=32]
+	1 -> 4 [label=54]
+	2
+	2 -> 4 [label=30]
+}

@@ -19,4 +19,4 @@ prog: main.o utils.o baseline.o
 	$(CC) utils.o baseline.o main.o -o prog
 
 clean:
-	rm -rf *.o 5
+	rm -rf *.o 5 

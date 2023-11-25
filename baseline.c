@@ -1,6 +1,6 @@
 #include "baseline.h"
 
-#define INT_MAX 100000
+
 
 void bellman_ford(struct Graph graph, int src, char* filename)
 {
@@ -39,10 +39,7 @@ void bellman_ford(struct Graph graph, int src, char* filename)
         if (dist[u] != INT_MAX
             && dist[u] + weight < dist[v]) {
             printf("Graph contains negative weight cycle\n");
-            
-            print_dist_array(dist, V);
-            save_dist_array(dist, V, filename);
- 
+            save_negative(filename);
             return; // If negative cycle is detected, simply
                     // return
         }

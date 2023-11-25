@@ -2,22 +2,30 @@ import os
 import random 
 import argparse
 from graphviz import Digraph
-import os 
 
-def generate_graph(n_vertexes: int, file_name: str) -> None:
+
+def generate_graph(n_vertexes: int, 
+                   file_name: str, 
+                   edges_perc = 1,
+                   neg_perc = .05) -> None:
     '''
     A graph is just a set of edges, where each edge has just three int values.
     The first two values are the vertexes that the edge connects, and the third
     value is the weight of the edge (which can be negative).
 
-    :param n_vertexes: The number of vertexes in the graph
-    :param file_name: The name of the file where the graph will be written
+    :param n_vertexes     : The number of vertexes in the graph
+    :param file_name      : The name of the file where the graph will be written
+    :param edges_perc     : Float from 0 to 1 indicating how much the graph 
+                            must be connected, if 1 then edges = n_vertexes^2    
 
     '''
 
-    edges = [(i, j, random.randint(0, 100)) for i in range(n_vertexes) for j in range(n_vertexes) if i != j]
-    # Cut a random number of edges
-    edges = random.sample(edges, k = random.randint(len(edges)/5, len(edges)))
+    edges = [(i, j, random.randint(-100*neg_perc, 100)) 
+                        for i in range(n_vertexes) 
+                        for j in range(n_vertexes) 
+                        if i != j
+    ]
+    edges = random.sample(edges, k = random.randint(len(edges)*edges_perc , len(edges)))
 
     # Write the graph to a file
 
@@ -61,7 +69,11 @@ def save_graph(filename, view = False):
     # Save graph
     dot.render(os.path.join(folder, 'tests', 'imgs', filename.split('.')[0]), view=view)
 
-def generate_graphs(n_graphs, size = 100, viz = True)-> None:
+def generate_graphs(n_graphs, 
+                    size, 
+                    viz,
+                    edges_perc,
+                    neg_perc)-> None:
     '''
     Generate and save n_graphs with size vertexws in a file.
     '''
@@ -70,10 +82,13 @@ def generate_graphs(n_graphs, size = 100, viz = True)-> None:
     print(f'Generating {n_graphs} graphs of size {size}')
 
     for i in range(n_graphs):
-        generate_graph(size, f'graph_{size}_{i}')
+        generate_graph(size, 
+                       f'{size}_{i}',
+                       edges_perc,
+                       neg_perc)
 
         if viz:
-            save_graph(f'graph_{size}_{i}.txt', view = False)
+            save_graph(f'{size}_{i}.txt', view = False)
     
     print('Done!')
 
@@ -83,9 +98,15 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate a graph')
     parser.add_argument('size', type=int, help='The number of vertexes in the graph', default=100)
     parser.add_argument('n_graphs', type=int, help='The number of graphs to generate', default=1)
-    parser.add_argument('--viz', type=str, help="Save also a visualization of the graph", default=False)
+    parser.add_argument('--viz', type=int, help="Save also a visualization of the graph", default=0)
+    parser.add_argument('--edges_perc', type=float, default=1.0)
+    parser.add_argument('--neg_perc', type=float, default=.05)
 
     args = parser.parse_args()
 
-    generate_graphs(args.n_graphs, args.size, viz=bool(args.viz))
+    generate_graphs(args.n_graphs, 
+                    args.size, 
+                    viz=bool(args.viz), 
+                    edges_perc = args.edges_perc, 
+                    neg_perc = args.neg_perc)
     

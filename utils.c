@@ -20,9 +20,7 @@ struct Graph create_graph(int n_vert, int n_edges) {
 }
 
 void free_graph(struct Graph* graph) {
-    free(graph->edge); // Free dynamically allocated memory for edges
-    // Optionally, if graph itself was dynamically allocated, free it as well:
-    // free(graph);
+    free(graph->edge); 
 }
 
 
@@ -83,10 +81,24 @@ void save_dist_array(int *dist, int n, char *filename){
 
     if(fp != NULL) {
         for(int i=0; i<n; i++) {
-            fprintf(fp, "%d %d\n", i, dist[i]);
+            if (dist[i] == INT_MAX)  fprintf(fp, "%d inf\n", i);
+            else fprintf(fp, "%d %d\n", i, dist[i]);
         }
 
     }
+    fclose(fp);
+}
+
+void save_negative(char *filename) {
+    /*
+        Negative cylces graphs are indicated with -1 -1
+    */
+    FILE *fp;
+
+    fp = fopen(filename, "w");
+    printf("Saving to file %s\n", filename);
+
+    if (fp != NULL) fprintf(fp, "%d %d\n", -1, -1);
     fclose(fp);
 
 }

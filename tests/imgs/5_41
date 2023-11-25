@@ -1,28 +1,28 @@
 // Graph
 digraph {
-	0
 	3
-	0 -> 3 [label=9]
-	1
-	2
-	1 -> 2 [label=19]
+	0
+	3 -> 0 [label=27]
 	4
-	3 -> 4 [label=8]
-	3 -> 2 [label=25]
-	4 -> 0 [label=13]
-	2 -> 3 [label=99]
-	2 -> 1 [label=88]
-	4 -> 1 [label=27]
-	3 -> 0 [label=99]
-	3 -> 1 [label=13]
-	4 -> 2 [label=20]
-	2 -> 4 [label=77]
-	4 -> 3 [label=17]
-	0 -> 4 [label=62]
-	0 -> 1 [label=60]
-	1 -> 3 [label=94]
-	1 -> 0 [label=60]
-	1 -> 4 [label=39]
-	0 -> 2 [label=76]
-	2 -> 0 [label=39]
+	1
+	4 -> 1 [label=85]
+	1 -> 4 [label=17]
+	4 -> 0 [label=53]
+	2
+	2 -> 4 [label=22]
+	0 -> 2 [label=40]
+	1 -> 3 [label=28]
+	3 -> 4 [label=-10]
+	0 -> 1 [label=18]
+	3 -> 1 [label=31]
+	4 -> 3 [label=12]
+	4 -> 2 [label=45]
+	3 -> 2 [label=5]
+	2 -> 3 [label=87]
+	0 -> 3 [label=66]
+	1 -> 0 [label=-10]
+	0 -> 4 [label=-3]
+	1 -> 2 [label=16]
+	2 -> 0 [label=88]
+	2 -> 1 [label=7]
 }

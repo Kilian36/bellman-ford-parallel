@@ -1,9 +1,9 @@
 #include "bf-omp.h"
 
-void bellman_ford_omp(struct Graph graph, int src, char *filename, double *time){
+void bellman_ford_omp(struct Graph *graph, int src, char *filename, double *time){
     double init_time, end_time; 
-    int V = graph.V;
-    int E = graph.E;
+    int V = graph->V;
+    int E = graph->E;
     int dist[V];
  
     init_time = omp_get_wtime();
@@ -23,9 +23,9 @@ void bellman_ford_omp(struct Graph graph, int src, char *filename, double *time)
         {
         #pragma omp for schedule(static)
         for (int j = 0; j < E; j++) {
-            int u = graph.edge[j].src;
-            int v = graph.edge[j].dest;
-            int weight = graph.edge[j].weight;
+            int u = graph->edge[j].src;
+            int v = graph->edge[j].dest;
+            int weight = graph->edge[j].weight;
             if (dist[u] != INT_MAX
                 && dist[u] + weight < dist[v])
                 dist[v] = dist[u] + weight;
@@ -41,9 +41,9 @@ void bellman_ford_omp(struct Graph graph, int src, char *filename, double *time)
     #pragma omp parallel for schedule(static)
     for (int i = 0; i < E; i++) {
         
-        int u = graph.edge[i].src;
-        int v = graph.edge[i].dest;
-        int weight = graph.edge[i].weight;
+        int u = graph->edge[i].src;
+        int v = graph->edge[i].dest;
+        int weight = graph->edge[i].weight;
         if (dist[u] != INT_MAX
             && dist[u] + weight < dist[v]) {
             end_time = omp_get_wtime();

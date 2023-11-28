@@ -30,7 +30,7 @@ int main(int argc, char** argv)
         snprintf(output_file, 100, "./results/distances/%s_%d.txt", size, i);
         struct Graph graph = read_graph(graph_file);
     
-        bellman_ford_omp(graph, 0, output_file, &time);
+        bellman_ford_omp(&graph, 0, output_file, &time);
         if (VERBOSE) printf("Elapsed time: %.5f\n", time);
 
         // Append the time to the file times.txt

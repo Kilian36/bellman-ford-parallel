@@ -2,25 +2,25 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define INT_MAX 1000000
+#define INF 1000000
 
-struct Edge {
-    int src, dest, weight;
-};
+typedef struct Graph {
+    int V;
+    int **adj;
+} Graph;
 
-struct Graph {
-    int V, E;
-    struct Edge *edge;
-};
+typedef struct Graph1D {
+    int V;
+    int *adj;
+} Graph1D;
 
-void print_graph(struct Graph graph);
+/*Utilities for graphs based on adjacency matrix*/
+void print_graph(Graph graph);
+Graph read_graph(char* filename);
+Graph1D read_graph1D(char *filename);
 
-struct Graph create_graph(int V, int E);
-
-struct Graph read_graph(char* filename);
-
+/*Utilities for the array with the results*/
 void print_dist_array(int *dist, int n);
-
 void save_dist_array(int *dist, int n, char *filename);
-
-void save_negative(char * filename);
+void save_negative(char *filename);
+void free_graph(Graph *graph);

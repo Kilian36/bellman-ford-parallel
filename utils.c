@@ -1,52 +1,55 @@
 #include "utils.h"
 
-// Utility function, to print a graph
-void print_graph(struct Graph graph){
-    printf("Graph with %d vertices and %d edges\n", graph.V, graph.E);
-    for(int i = 0; i < graph.E; i++){
-        printf("Edge %d  : %d -> %d\n", i, graph.edge[i].src, graph.edge[i].dest);
-        printf("Weight :      %d\n", graph.edge[i].weight);
+
+/*Utilities for graph in the form struct AdjGraph*/
+void print_graph(Graph graph){
+    printf("Graph with %d vertices\n", graph.V);
+    for(int i = 0; i < graph.V; i++){
+        for(int j = 0; j < graph.V; j++){
+            printf("%d\t", graph.adj[i][j]);
+        }
+        printf("\n");
+        printf("\n");
     } 
 }
-struct Graph create_graph(int n_vert, int n_edges) {
-    struct Edge* edges = malloc(n_edges * sizeof(struct Edge));
-    if (edges == NULL) {
-        // Handle memory allocation failure
-        exit(EXIT_FAILURE);
-    }
-
-    struct Graph graph = {n_vert, n_edges, edges};
-    return graph;
-}
-
-void free_graph(struct Graph* graph) {
-    free(graph->edge); 
-}
-
 
 struct Graph read_graph(char* filename)
 {
     FILE * fp;
     char * line = NULL;
     size_t len = 0;
-    int read;
 
-    int V, E;
+    int V;
 
     fp = fopen(filename, "r");
     if (fp == NULL)
         exit(EXIT_FAILURE);
+
     printf("File opened\n");
-    read = getline(&line, &len, fp);
+    getline(&line, &len, fp);
     V = atoi((const char *) line);
     
-    read = getline(&line, &len, fp);
-    E = atoi((const char *) line);
+    getline(&line, &len, fp);
+
+    int **adj = (int**)malloc(V * sizeof(int *));
+
+    for (int i=0; i<V; i++) {
+        adj[i] = (int *)malloc(V * sizeof(int));
+        if (adj[i] == NULL) {
+            // Handle memory allocation failure
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    // Initialize the graph
+    for (int i=0; i<V; i++) {
+        for (int j=0; j<V; j++) {
+            adj[i][j] = 0;
+        }
+    }
     
-    struct Graph graph = create_graph(V, E);
-    
-    int i = 0;
-    while ((getline(&line, &len, fp)) != -1 && (i < E)) {
+    // Declare a bidimensional array of size VxV and initialize it to 0 statically
+    while ((getline(&line, &len, fp)) != -1) {
         
         char *scr, *dst, *w;
         scr = strtok(line, " ");
@@ -58,30 +61,82 @@ struct Graph read_graph(char* filename)
         int destination = atoi((const char *) dst);
         int my_weight = atoi((const char *) w);
         
-        graph.edge[i].src = source;
-        graph.edge[i].dest = destination;
-        graph.edge[i].weight = my_weight;
-        
-        i++;
-        
+        adj[source][destination] = my_weight;
     }
 
     fclose(fp);
     if (line)
         free(line);
     
-    return graph;
+    return (struct Graph) {V, adj};
+}   
+
+void free_graph(Graph *graph){
+    for(int i = 0; i < graph->V; i++){
+        free(graph->adj[i]);
+    }
+    free(graph->adj);
 }
+
+struct Graph1D read_graph1D(char* filename)
+{
+    FILE * fp;
+    char * line = NULL;
+    size_t len = 0;
+
+    int V;
+
+    fp = fopen(filename, "r");
+    if (fp == NULL)
+        exit(EXIT_FAILURE);
+
+    printf("File opened\n");
+    getline(&line, &len, fp);
+    V = atoi((const char *) line);
+    
+    getline(&line, &len, fp);
+
+    int *adj = (int*)malloc(V * V * sizeof(int *));
+
+    // Initialize the graph
+    for (int i=0; i<V; i++) {
+        for (int j=0; j<V; j++) {
+            adj[i*V + j] = 0;
+        }
+    }
+    
+    // Declare a bidimensional array of size VxV and initialize it to 0 statically
+    while ((getline(&line, &len, fp)) != -1) {
+        
+        char *scr, *dst, *w;
+        scr = strtok(line, " ");
+        dst = strtok(NULL, " ");
+        w = strtok(NULL, " ");
+
+        int source = atoi((const char *) scr);
+        int destination = atoi((const char *) dst);
+        int my_weight = atoi((const char *) w);
+        
+        adj[source*V + destination] = my_weight;
+    }
+
+    fclose(fp);
+    if (line)
+        free(line);
+    
+    return (struct Graph1D) {V, adj};
+}   
 
 void save_dist_array(int *dist, int n, char *filename){
     FILE *fp;
     // We write in the first line the original node
     fp = fopen(filename, "w");
     printf("Saving to file %s\n", filename);
+    printf("\n");
 
     if(fp != NULL) {
         for(int i=0; i<n; i++) {
-            if (dist[i] == INT_MAX)  fprintf(fp, "%d inf\n", i);
+            if (dist[i] == INF) fprintf(fp, "%d inf\n", i);
             else fprintf(fp, "%d %d\n", i, dist[i]);
         }
 
@@ -97,6 +152,7 @@ void save_negative(char *filename) {
 
     fp = fopen(filename, "w");
     printf("Saving to file %s\n", filename);
+    printf("\n");
 
     if (fp != NULL) fprintf(fp, "%d %d\n", -1, -1);
     fclose(fp);

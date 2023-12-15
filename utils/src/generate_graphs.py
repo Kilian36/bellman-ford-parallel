@@ -96,17 +96,16 @@ def generate_graphs(n_graphs,
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Generate a graph')
-    parser.add_argument('size', type=int, help='The number of vertexes in the graph', default=100)
-    parser.add_argument('n_graphs', type=int, help='The number of graphs to generate', default=1)
+    parser.add_argument('-s', type=int, help='The number of vertexes in the graph', default=100)
+    parser.add_argument('-n', type=int, help='The number of graphs to generate', default=1)
     parser.add_argument('--viz', type=int, help="Save also a visualization of the graph", default=0)
     parser.add_argument('--edges_perc', type=float, default=1.0)
     parser.add_argument('--neg_perc', type=float, default=.05)
 
     args = parser.parse_args()
 
-    generate_graphs(args.n_graphs, 
-                    args.size, 
+    generate_graphs(args.n, 
+                    args.s, 
                     viz=bool(args.viz), 
                     edges_perc = args.edges_perc, 
                     neg_perc = args.neg_perc)
-    

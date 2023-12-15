@@ -1,4 +1,0 @@
-2. Write one or two versions of the algorithm in openmp. Check them and compute average time
-   with several cores. 
-3. Create a bash fiel to run the program with several cores and save times once the model is 
-been evaluated

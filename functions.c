@@ -1,4 +1,4 @@
-#include "utils.h"
+#include "functions.h"
 
 
 /*Utilities for graph in the form struct AdjGraph*/
@@ -25,7 +25,7 @@ struct Graph read_graph(char* filename)
     if (fp == NULL)
         exit(EXIT_FAILURE);
 
-    printf("File opened\n");
+    if (VERBOSE) printf("File opened\n");
     getline(&line, &len, fp);
     V = atoi((const char *) line);
     
@@ -90,7 +90,7 @@ struct Graph1D read_graph1D(char* filename)
     if (fp == NULL)
         exit(EXIT_FAILURE);
 
-    printf("File opened\n");
+    if (VERBOSE) printf("File opened\n");
     getline(&line, &len, fp);
     V = atoi((const char *) line);
     
@@ -131,9 +131,7 @@ void save_dist_array(int *dist, int n, char *filename){
     FILE *fp;
     // We write in the first line the original node
     fp = fopen(filename, "w");
-    printf("Saving to file %s\n", filename);
-    printf("\n");
-
+    
     if(fp != NULL) {
         for(int i=0; i<n; i++) {
             if (dist[i] == INF) fprintf(fp, "%d inf\n", i);
@@ -151,8 +149,6 @@ void save_negative(char *filename) {
     FILE *fp;
 
     fp = fopen(filename, "w");
-    printf("Saving to file %s\n", filename);
-    printf("\n");
 
     if (fp != NULL) fprintf(fp, "%d %d\n", -1, -1);
     fclose(fp);
@@ -164,4 +160,18 @@ void print_dist_array(int *dist, int n)
     printf("Vertex  Distance from Source\n");
     for (int i = 0; i < n; ++i)
         printf("%d \t\t %d\n", i, dist[i]);
+}
+
+
+void get_str(int idx, int max_idx, char *zeros){
+    int nfigs, loc_fig;
+
+    int tot_fig = (int)((ceil(log10(max_idx + 1))));
+
+    loc_fig = (int)((ceil(log10(idx + 1))));
+    nfigs = tot_fig - loc_fig;
+
+    for(int i=0; i<nfigs-1; i++) zeros[i] = '0';
+    zeros[nfigs] = '\0';
+
 }

@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #define INF 1000000
+#define VERBOSE 0
 
 typedef struct Graph {
     int V;
@@ -24,3 +26,6 @@ void print_dist_array(int *dist, int n);
 void save_dist_array(int *dist, int n, char *filename);
 void save_negative(char *filename);
 void free_graph(Graph *graph);
+
+/*Function to read correctly the file idx*/
+void get_str(int idx, int max_idx, char *zeros);

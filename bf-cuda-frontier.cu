@@ -5,7 +5,7 @@
 #include <cuda_runtime.h>
 
 extern "C" {
-    #include "utils.h"
+    #include "functions.h"
 }
 
 
@@ -29,6 +29,21 @@ __device__ void swap_and_restart(int *front1, int *front2, int *new_size, int si
     *new_size = real_idx;  
 }
 
+
+/*  
+    Compute the bellman ford algorithm efficiently, using the forntier method. This helps to reduce the 
+    number of iterations of the algorithm, since it only relax over the nodes that have been modified. 
+    The adventage of the cuda version is that it can exploit fast shared memory among the same block and an 
+    extremely high number of threads.
+
+    @param graph: a struct containing the adjacency matrix (2D array) and the number of nodes.
+    @param src  : the starting node of the bellman frod algorithm.
+    @param p    : the number of processors.
+    
+    @param *dist: array to save the distances from the source node.
+    @param *negative: variable to check whether the graph has negative cycles.
+    @param *time : variable to save the elapsed time.
+*/
 __global__ void bellman_ford_frontier(
                                 int *adj, 
                                 int *dist, 
@@ -119,25 +134,40 @@ int main(int argc, char **argv) {
     
     char *size = argv[2];
     char *n_graphs = argv[1];
+    char *threads = argv[3];
     
     // Filenames variables
     char *gfile = (char *) malloc(100 * sizeof(char));
     char *ofile = (char *) malloc(100 * sizeof(char));
+    char *zeros = (char *) malloc(100 * sizeof(char));
 
     // Structurals values
-    int num_threads = 1; //int tile_size = 1; 
+    int num_threads = atoi(threads); 
+    int scr = 0;
 
     // Counters
     clock_t start, end;
+    double avg_time = 0;
+
+    if (num_threads > atoi(size)) num_threads=atoi(size);
 
     for(int i = 0; i < atoi(n_graphs); i++) {
-
-        // Read files
-        snprintf(gfile, 100, "./tests/graphs/%s_%d.txt", size, i);
-        snprintf(ofile, 100, "./results/distances/%s_%d.txt", size, i);
+        
+        get_str(i, atoi(n_graphs), zeros);
+        
+        snprintf(gfile, 100, "./tests/graphs/%s_%s%d.txt", size, zeros, i);
+        snprintf(ofile, 100, "./results/cuda-frontier/distances/%s_%s%d.txt", size, zeros, i);
+        
+        // Create the output folder
+        char *command = (char *) malloc(100 * sizeof(char));
+        snprintf(command, 100, "mkdir -p ./results/cuda-frontier/distances");
+        system(command);
 
         //Output 
-        printf("Output file: %s\n", ofile);
+        if(VERBOSE) {
+            printf("Output file: %s\n", ofile);
+            printf("Graph to read file: %s\n", gfile);
+        }
 
         // Read graphs
         Graph1D graph = read_graph1D(gfile);
@@ -147,6 +177,8 @@ int main(int argc, char **argv) {
 
         // Create results variables
         const int n = graph.V; 
+        // Make sure there is at most one thread per node
+
         int *adj=graph.adj; int *d_adj;
         int dist[n]; int *d_dist;
         int *negative = (int *) malloc(sizeof(int));
@@ -154,10 +186,10 @@ int main(int argc, char **argv) {
 
         // Initialize 
         *negative = 0;
-        dist[0] = 0;
-        for(int i=1; i<n; i++) {
-            dist[i] = INF;
-        } 
+        for(int j=0; j<n; j++) {
+            dist[j] = INF;
+        }
+        dist[scr] = 0; 
         
         cudaMalloc((void **)&d_dist, n * sizeof(int));
         cudaMalloc((void **)&d_negative, sizeof(int));
@@ -175,6 +207,12 @@ int main(int argc, char **argv) {
                             num_threads,
                             0
                             );
+        
+        // Progress bar
+        if (!VERBOSE) { 
+            printf("\rIn progress %f%%", (float)(i+1)/atoi(n_graphs)*100);
+            fflush(stdout);
+        }
 
         // Copy back the results                        
         cudaMemcpy(dist, d_dist, n * sizeof(int), cudaMemcpyDeviceToHost);
@@ -186,11 +224,15 @@ int main(int argc, char **argv) {
 
         double elapsed_time = double(end - start) / CLOCKS_PER_SEC;
 
+        avg_time += elapsed_time;
+
+        if(VERBOSE) printf("Elapsed time: %f ", elapsed_time);
+
         if (*negative) save_negative(ofile);
         else save_dist_array(dist, n, ofile);
 
         FILE *fp;
-        fp = fopen("./results/times.txt", "a");
+        fp = fopen("./results/cuda-frontier/times.txt", "a");
         fprintf(fp, "%d %.5f %d\n", n, elapsed_time, num_threads);
         fclose(fp);
 
@@ -201,8 +243,12 @@ int main(int argc, char **argv) {
         cudaError_t error;
         error = cudaGetLastError();
         const char *error_str = cudaGetErrorString(error);
-        //printf("%s\n", error_str);
+        printf("%s\n", error_str);
     }
 
-    free(gfile); free(ofile);
+    printf("\n");
+    printf("Average time: %f\n", avg_time / atoi(n_graphs));
+
+    free(gfile); free(ofile); free(zeros);
+    return 0;
 }

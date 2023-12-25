@@ -28,11 +28,13 @@ int main(int argc, char **argv)
     
     printf("Starting the loop\n");
     printf("\n");
+    printf("%s", size);
     for (int i = 0; i < atoi(n_graphs); i++)
     {
     
         snprintf(graph_file, 100, "./tests/graphs/%s_%d.txt", size, i);
         snprintf(output_file, 100, "./results/distances/%s_%d.txt", size, i);
+        
         Graph graph = read_graph(graph_file);
 
         printf("Output file: %s\n", output_file);

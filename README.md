@@ -23,18 +23,18 @@ If you don't work with a SLURM MACHINE you can run the three experiments by call
     - make run_exp3
 
 Otherwise you must write a sbatch script run_script.sbatch, which generally as the following structure:
-    ```
-    #!/bin/bash
-    #SBATCH --job-name="bellman-ford-parallel"
-    #SBATCH --mail-type=ALL
-    #SBATCH --time=03:00:00
-    #SBATCH --nodes=1
-    #SBATCH --output=terminal_file.txt
-    #SBATCH --gres=gpu:1
-    #SBATCH --cores-per-socket=4
-    echo "EXP 1"
-    make run_exp1
-    ```
+```
+#!/bin/bash 
+#SBATCH --job-name="bellman-ford-parallel"
+#SBATCH --mail-type=ALL
+#SBATCH --time=03:00:00
+#SBATCH --nodes=1
+#SBATCH --output=terminal_file.txt
+#SBATCH --gres=gpu:1
+#SBATCH --cores-per-socket=4
+echo "EXP 1"
+make run_exp1
+```
 You should write this directly in a linux machine to avoid problems with ```\n``` characters.
 
 All the parameters in the makefile can be changed to perform some new experiments. 

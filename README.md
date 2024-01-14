@@ -42,7 +42,7 @@ All the parameters in the makefile can be changed to perform some new experiment
 ## CODE STRUCTURE
 Every C/CU source code file has its own main. It works as follows:
 - It reads graphs from files in the path ./tests/graphs/ 
-  The graph file structure is:
+  The graph file structure is:  
    $n_i$   $n_j$   $w_{ij}$   
    $n_k$   $n_l$   $w_{kl}$  
 - It computes the bellman ford algorithm and stores all the distances and times (if != form baseline)

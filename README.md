@@ -43,8 +43,8 @@ All the parameters in the makefile can be changed to perform some new experiment
 Every C/CU source code file has its own main. It works as follows:
 - It reads graphs from files in the path ./tests/graphs/ 
   The graph file structure is:
-   $n_i$ $n_j$ $w_{ij}$
-   $n_k$ $n_l$ $w_{kl}$
+   $n_i$   $n_j$   $w_{ij}$   
+   $n_k$   $n_l$   $w_{kl}$  
 - It computes the bellman ford algorithm and stores all the distances and times (if != form baseline)
   at the path ./results/model_name/distances and ./results/model_name/times.txt. If you run the baseline, 
   it solves the graph and put the solution in grountruths. 

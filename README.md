@@ -13,11 +13,10 @@ The makefile contains the targets to run the experiments reported in the pdf.
 If you don't work with a SLURM MACHINE you can run the three experiments by calling
 
 make run_exp1
-make run_exp2  # Slow, make take half an hour
+make run_exp2  # Slow, may take half an hour
 make run_exp3
 
 All the parameters in the makefile can be changed to perform some new experiments. 
-
 
 ## CODE STRUCTURE
 Every C/CU source code file has its own main. It works as follows:
@@ -32,4 +31,6 @@ Every C/CU source code file has its own main. It works as follows:
 The graph generator is written in python and puts all the graphs at the needed path.
 
 The model checker compares the output of all the distances folders in results with the ones in grountruths.
+
+For a more detailed structure of the implementations refer to the project report found in this report. 
  

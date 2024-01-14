@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
 /*  
     Compute the bellman ford algorithm, using a parallel loop over the inner loop of the edges. 
     The correctness is sensured by the fact that the computation in the last inner loop are completely 
-    independent. All the edges are relaxed every time
+    independent. All the edges are relaxed every time.
 
     @param graph: a struct containing the adjacency matrix (2D array) and the number of nodes.
     @param src  : the starting node of the bellman frod algorithm.

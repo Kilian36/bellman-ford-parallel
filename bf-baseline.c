@@ -24,6 +24,8 @@ int main(int argc, char **argv) {
     double time;
     int src = 0; 
     
+    printf("Output folder is: .tests/groundtruths\n");
+    printf("Graph source folder is: ./tests/graphs\n");
     printf("Starting the loop\n");
     for (int i = 0; i < atoi(n_graphs); i++)
     {   
@@ -69,7 +71,16 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-
+/*
+The function takes as input a graph, the source node, an array of distances
+and a flag to check if there is a negative cycle. The function computes the
+shortest path from the source node to all the other nodes in the graph.
+@params:
+    struct Graph *graph: the graph
+    int src: the source node
+    int *dist: the array of distances
+    int *negative: the flag to check if there is a negative cycle
+*/
 void bellman_ford(struct Graph *graph, int src, int *dist, int *negative)
 {
     int V = graph->V;

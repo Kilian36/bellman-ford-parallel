@@ -1,3 +1,7 @@
+# Efficient Bellman ford Algorithm
+
+![Bellman-Ford-Algorithm-3](https://github.com/Kilian36/bellman-ford-parallel/assets/94917153/272fff90-de43-4993-812d-203b5092840a)
+
 This repository contains the code to run the Bellman-Ford algorithm in serveral parallel versions.
 
 ## REQUIREMENTS
